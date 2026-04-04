@@ -72,6 +72,8 @@ export const createAccessTokenWithRefreshToken = async (
     userId: isUserExist._id,
     email: isUserExist.email,
     role: isUserExist.role,
+    name: `${isUserExist.firstName} ${isUserExist.lastName}`,
+    profileImg: isUserExist.profileImg,
   };
 
   // genrate access tokens
