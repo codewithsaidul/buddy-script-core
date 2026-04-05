@@ -26,7 +26,7 @@ export const PostController = {
   getPosts: catchAsync(async (req: TRequest, res: TResponse) => {
     const { userId } = req.user as JwtPayload;
 
-    const result = await PostService.getPosts(
+    const { data, meta } = await PostService.getPosts(
       userId as string,
       req.query as Record<string, string>,
     );
@@ -35,7 +35,7 @@ export const PostController = {
       statusCode: StatusCodes.OK,
       success: true,
       message: "Posts retrieved successfully!",
-      data: result,
+      data, meta
     });
   }),
 

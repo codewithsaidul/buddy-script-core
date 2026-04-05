@@ -36,6 +36,7 @@ export const PostService = {
     const queryBuilder = new QueryBuilder(
       Post.find({
         $or: [{ visibility: PostVisibility.PUBLIC }, { author: authorId }],
+        isDeleted: false
       }),
       query,
     );

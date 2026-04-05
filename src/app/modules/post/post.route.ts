@@ -5,6 +5,7 @@ import { multerUpload } from "../../config/multer.config";
 import { validateRequest } from "../../middleware/validateRequest";
 import { createPostZodSchema } from "./post.validation";
 import { PostController } from "./post.controller";
+import { CommentRoutes } from "../comments/comments.route";
 
 const router = Router();
 
@@ -23,5 +24,8 @@ router.patch(
   checkAuth(...Object.values(UserRole)),
   PostController.toggleLike,
 );
+
+
+router.use("/:postId/comments", CommentRoutes)
 
 export const PostRoutes = router;
