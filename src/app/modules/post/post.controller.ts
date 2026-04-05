@@ -43,14 +43,52 @@ export const PostController = {
     const { userId } = req.user as JwtPayload;
 
     const result = await PostService.toggleLike(
-        req.params.postId as string,
-        userId as string,
+      req.params.postId as string,
+      userId as string,
     );
 
     sendResponse(res, {
       statusCode: StatusCodes.OK,
       success: true,
       message: "Post like toggled successfully!",
+      data: result,
+    });
+  }),
+
+  updatePost: catchAsync(async (req: TRequest, res: TResponse) => {
+    const { userId } = req.user as JwtPayload;
+
+    const payload: IPost = {
+      ...req.body,
+      image: req?.file?.path,
+    };
+
+    const result = await PostService.updatePost(
+      req.params.postId as string,
+      userId as string,
+      payload,
+    );
+
+    sendResponse(res, {
+      statusCode: StatusCodes.OK,
+      success: true,
+      message: "Post updated successfully!",
+      data: result,
+    });
+  }),
+
+  deletePost: catchAsync(async (req: TRequest, res: TResponse) => {
+    const { userId } = req.user as JwtPayload;
+
+    const result = await PostService.deletePost(
+      req.params.postId as string,
+      userId as string,
+    );
+
+    sendResponse(res, {
+      statusCode: StatusCodes.OK,
+      success: true,
+      message: "Post deleted successfully!",
       data: result,
     });
   }),

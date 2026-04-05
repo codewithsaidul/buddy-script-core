@@ -4,7 +4,6 @@ import { QueryBuilder } from "../../utils/queryBuilder";
 import { User } from "../user/user.model";
 import { IPost, PostVisibility } from "./post.interface";
 import { Post } from "./post.model";
-import { Types } from "mongoose";
 
 export const PostService = {
   createPost: async (payload: IPost, authorId: string) => {
@@ -35,6 +34,7 @@ export const PostService = {
     // Implementation for fetching posts based on query parameters
     const queryBuilder = new QueryBuilder(
       Post.find({
+        isDeleted: false,
         $or: [{ visibility: PostVisibility.PUBLIC }, { author: authorId }],
         isDeleted: false
       }),
@@ -63,7 +63,7 @@ export const PostService = {
     const post = await Post.findById(postId);
     if (!post) throw new AppError(StatusCodes.NOT_FOUND, "Post not found");
 
-    const isLiked = post.likes.includes(new Types.ObjectId(userId));
+    const isLiked = post.likes.some((id) => id.toString() === userId);
 
     if (isLiked) {
       return await Post.findByIdAndUpdate(
@@ -78,5 +78,60 @@ export const PostService = {
         { new: true },
       );
     }
+  },
+
+  updatePost: async (
+    postId: string,
+    authorId: string,
+    payload: Partial<IPost>,
+  ) => {
+    const isExistPost = await Post.findById(postId);
+
+    if (!isExistPost) {
+      throw new AppError(StatusCodes.NOT_FOUND, "Post not found!");
+    }
+
+    if (isExistPost.author.toString() !== authorId) {
+      throw new AppError(
+        StatusCodes.FORBIDDEN,
+        "You do not have permission to perform this action.",
+      );
+    }
+
+    const updateData = { ...payload };
+
+    if (payload.image === "" || payload.image === null) {
+      updateData.image = "";
+    }
+
+    const updatePost = await Post.findByIdAndUpdate(postId, updateData, {
+      runValidators: true,
+      new: true,
+    });
+
+    return updatePost;
+  },
+
+  deletePost: async (postId: string, authorId: string) => {
+    const isExistPost = await Post.findById(postId);
+
+    if (!isExistPost) {
+      throw new AppError(StatusCodes.NOT_FOUND, "Post not found!");
+    }
+
+    if (isExistPost.author.toString() !== authorId) {
+      throw new AppError(
+        StatusCodes.FORBIDDEN,
+        "You do not have permission to perform this action.",
+      );
+    }
+
+    const deletePost = await Post.findByIdAndUpdate(
+      postId,
+      { isDeleted: true },
+      { new: true, runValidators: true },
+    );
+
+    return deletePost;
   },
 };
