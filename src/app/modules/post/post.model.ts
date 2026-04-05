@@ -10,7 +10,6 @@ const postSchema = new Schema<IPost, PostModel>(
     },
     content: { 
       type: String, 
-      required: [true, "Post content is required"],
       trim: true 
     },
     image: { type: String, default: "" },

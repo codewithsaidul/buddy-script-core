@@ -3,7 +3,7 @@ import { checkAuth } from "../../middleware/checkAuth";
 import { UserRole } from "../user/user.interface";
 import { multerUpload } from "../../config/multer.config";
 import { validateRequest } from "../../middleware/validateRequest";
-import { createPostZodSchema } from "./post.validation";
+import { createPostZodSchema, updatePostZodSchema } from "./post.validation";
 import { PostController } from "./post.controller";
 
 const router = Router();
@@ -17,6 +17,21 @@ router.post(
 );
 
 router.get("/", checkAuth(...Object.values(UserRole)), PostController.getPosts);
+
+router.patch(
+  "/:postId",
+  checkAuth(...Object.values(UserRole)),
+  multerUpload.single("file"),
+  validateRequest(updatePostZodSchema),
+  PostController.updatePost,
+);
+
+router.delete(
+  "/:postId",
+  checkAuth(...Object.values(UserRole)),
+  PostController.deletePost,
+);
+
 
 router.patch(
   "/:postId/like",
