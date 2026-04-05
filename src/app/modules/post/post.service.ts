@@ -36,7 +36,6 @@ export const PostService = {
       Post.find({
         isDeleted: false,
         $or: [{ visibility: PostVisibility.PUBLIC }, { author: authorId }],
-        isDeleted: false
       }),
       query,
     );
