@@ -13,6 +13,8 @@ export const createUserToken = (user: Partial<IUser>) => {
     userId: user._id,
     email: user.email,
     role: user.role,
+    name: `${user.firstName} ${user.lastName}`,
+    profileImg: user.profileImg || "",
   };
 
   // genrate access tokens

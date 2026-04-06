@@ -46,7 +46,8 @@ export const PostService = {
       .sort()
       .fields()
       .paginate()
-      .populate("author", "firstName lastName profileImg");
+      .populate("author", "firstName lastName profileImg")
+      .populate("likes", "firstName lastName profileImg");
 
     const [data, meta] = await Promise.all([
       posts.build(),
