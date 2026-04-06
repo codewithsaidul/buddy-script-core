@@ -6,6 +6,5 @@ export const excludedFields = [
   "limit",
   "page",
   "fields",
-  "minPrice", 
-  "maxPrice"
+  "loggedIn"
 ];
